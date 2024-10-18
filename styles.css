@@ -1,0 +1,257 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+}
+
+body {
+  background-image: url('./img/backgroud.jpg'); /* Thay thế bằng URL ảnh của bạn */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+ /*backdrop-filter: blur(4px); * Làm mờ hình nền để dễ đọc nội dung */
+}
+
+/* Container */
+.container {
+  background: rgba(255, 255, 255, 0.9); /* Nền trắng mờ để hòa hợp với hình nền */
+  padding: 20px 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  max-width: 600px;
+  width: 100%;
+  margin: 16px;
+  backdrop-filter: blur(10px); /* Làm mờ nội dung nền */
+  transition: transform 0.3s ease;
+}
+
+.container:hover {
+  transform: translateY(-5px); /* Hiệu ứng hover nhấc container */
+}
+
+/* Title */
+h1 {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Input Section */
+.input {
+  margin-bottom: 20px;
+}
+
+.input div {
+  margin-bottom: 15px;
+}
+
+.subnet-mask {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: left;
+}
+
+/* Label Styling */
+label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Input Field Styling */
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  color: #333;
+  outline: none;
+  transition: border 0.3s, box-shadow 0.3s;
+}
+
+input[type="text"]:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+}
+
+/* Binary Display */
+.converToBinary {
+  font-size: 14px;
+  font-family: monospace;
+  color: #888;
+  margin-top: 5px;
+}
+
+/* Result Section */
+.result {
+  margin-top: 20px;
+  background-color: rgba(248, 249, 250, 0.9);
+  padding: 15px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.network-block {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Button Styling */
+button {
+  width: 100%;
+  padding: 12px;
+  background-image: linear-gradient(45deg, #007bff, #0056b3);
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: background-image 0.3s ease, transform 0.3s ease;
+  margin-top: 20px;
+}
+
+button:hover {
+  background-image: linear-gradient(45deg, #b34800, #7f4800);
+  transform: translateY(-3px);
+}
+
+/* MEDIA QUERIES */
+
+/* Responsive cho màn hình nhỏ (điện thoại di động) */
+@media (max-width: 576px) {
+  .container {
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  label {
+    font-size: 12px;
+  }
+
+  input[type="text"] {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+/* Responsive cho màn hình trung bình (máy tính bảng hoặc màn hình nhỏ hơn 768px) */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px 30px;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+
+  input[type="text"] {
+    font-size: 15px;
+    padding: 9px;
+  }
+
+  button {
+    font-size: 15px;
+    padding: 11px;
+  }
+}
+/* Menu mặc định bị ẩn */
+.menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 300px;
+  height: 100vh;
+  background-color: #333;
+  color: white;
+  padding: 20px;
+  transform: translateX(-100%); /* Di chuyển menu ra khỏi màn hình */
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Hiển thị menu khi có lớp 'active' */
+.menu.active {
+  transform: translateX(0); /* Đưa menu vào trong màn hình */
+}
+
+/* Nút đóng menu */
+.close-menu-btn {
+  /* position: absolute; */
+  top: 20px;
+  right: 20px;
+  font-size: 30px;
+  background-color: #007bffb7;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Nội dung menu */
+.menu-content {
+  margin-top: 150px;
+}
+
+.menu-content p {
+  font-size: 16px;
+  margin-bottom: 30px;
+}
+
+/* Nút mở menu */
+.open-menu-btn {
+  position: fixed;
+  top: 0px;
+  left: 0px; /* Giữ nút ở góc trái */
+  font-size: 40px; /* Tăng kích thước font */
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 15px 20px; /* Tăng kích thước padding */
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 999;
+  width: auto; /* Giới hạn chiều rộng của nút */
+  text-align: left; /* Căn chữ sang trái */
+  transition: background-color 0.3s ease;
+}
+
+.open-menu-btn:hover {
+  background-color: #0056b3;
+}
+
+.margin-left-300 {
+  margin-left: 300px;
+}
+
+

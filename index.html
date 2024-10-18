@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Subnet Calculator</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="container cal">
+      <h1>Subnet Calculator</h1>
+      <div class="content ">
+        <div class="input">
+          <div>
+            <label for="ip">Địa chỉ IP</label>
+            <input
+              type="text"
+              name="ip"
+              placeholder="Vui lòng nhập địa chỉ IP"
+              oninput="updateBinaryIp()"
+            />
+            <input
+              type="text"
+              class="ip-binary"
+              name="ip-binary"
+              placeholder="Binary IP"
+              style="margin-top: 10px"
+              disabled
+            />
+          </div>
+          <div>
+            <div class="subnet-mask">
+              <label for="subnet-mask">Subnet mask /</label>
+              <input
+                style="max-width: 100px; margin-left: 20px"
+                type="text"
+                name="subnet-mask"
+                placeholder="24"
+                oninput="updateBinaryIp()"
+              />
+            </div>
+            <input
+              class="subnet-mask-number"
+              style="margin-bottom: 10px"
+              type="text"
+              placeholder="Địa chỉ subnet mask"
+              disabled
+            />
+            <input
+              type="text"
+              class="subnet-mask-binary"
+              name="subnet-mask-binary"
+              placeholder="Binary Subnet Mask"
+              disabled
+            />
+          </div>
+        </div>
+      </div>
+      <button onclick="calculateSubnets()">Tính toán</button>
+    </div>
+    <div class="container">
+      <div
+        class="result"
+        style="height: 380px; padding: 0px; margin: 12px"
+      ></div>
+    </div>
+    <!-- Nút mở/đóng menu -->
+    <a
+      class="open-menu-btn"
+      style="padding: 0px; height: 70px"
+      onclick="toggleMenu()"
+    >
+      <img
+        id="menu-icon"
+        src="./img/momenu.png"
+        alt="Menu Open"
+        style="width: 50px; height: 70px"
+      />
+      <!-- Icon menu mở -->
+    </a>
+
+    <!-- Menu -->
+    <div class="menu" id="menu">
+      <!-- Ban đầu menu ẩn -->
+      <div class="menu-content">
+        <p>1. Nhập địa chỉ IP và subnet mask để tính toán mạng.</p>
+        <p>2. Bấm "Tính toán" để xem địa chỉ mạng và broadcast.</p>
+        <p>3. Xem kết quả ở phần kết quả bên dưới.</p>
+      </div>
+    </div>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
