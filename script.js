@@ -1,21 +1,14 @@
-// Hàm chuyển đổi địa chỉ IP sang nhị phân theo từng octet
 function ipToBinary(ip) {
   const octets = ip.split(".");
   const binaryOctets = octets.map((octet) => {
-    if (
-      octet === "" ||
-      isNaN(octet) ||
-      parseInt(octet) > 255 ||
-      parseInt(octet) < 0
-    ) {
-      return ""; // Nếu octet chưa nhập hoặc không hợp lệ thì bỏ trống
+    if (octet === "" || isNaN(octet) || parseInt(octet) > 255 || parseInt(octet) < 0) {
+      return "";
     }
     return parseInt(octet, 10).toString(2).padStart(8, "0");
   });
   return binaryOctets.join(".");
 }
 
-// Hàm chuyển đổi CIDR sang subnet mask dạng thập phân
 function cidrToSubnetMask(cidr) {
   const mask = [];
   for (let i = 0; i < 4; i++) {
@@ -26,13 +19,11 @@ function cidrToSubnetMask(cidr) {
   return mask.join(".");
 }
 
-// Hàm chuyển đổi CIDR sang subnet mask nhị phân
 function cidrToBinary(cidr) {
   let binaryMask = "".padStart(cidr, "1").padEnd(32, "0");
   return binaryMask.match(/.{1,8}/g).join(".");
 }
 
-// Hàm cập nhật nhị phân theo thời gian thực cho IP và Subnet Mask
 function updateBinaryIp() {
   const ipInput = document.querySelector('input[name="ip"]').value;
   const subnetInput = document.querySelector('input[name="subnet-mask"]').value;
@@ -41,21 +32,18 @@ function updateBinaryIp() {
   const subnetBinaryOutput = document.querySelector(".subnet-mask-binary");
   const subnetNumberOutput = document.querySelector(".subnet-mask-number");
 
-  // Cập nhật nhị phân cho IP
   ipBinaryOutput.value = ipToBinary(ipInput);
 
-  // Cập nhật nhị phân và thập phân cho Subnet Mask
   if (subnetInput && !isNaN(parseInt(subnetInput))) {
     const cidr = parseInt(subnetInput);
-    subnetBinaryOutput.value = cidrToBinary(cidr); // Hiển thị subnet mask nhị phân
-    subnetNumberOutput.value = cidrToSubnetMask(cidr); // Hiển thị subnet mask dạng thập phân
+    subnetBinaryOutput.value = cidrToBinary(cidr);
+    subnetNumberOutput.value = cidrToSubnetMask(cidr);
   } else {
     subnetBinaryOutput.value = "";
     subnetNumberOutput.value = "";
   }
 }
 
-// Hàm kiểm tra định dạng IP hợp lệ
 function validateIp(ip) {
   const octets = ip.split(".");
   if (octets.length !== 4) return false;
@@ -66,78 +54,143 @@ function validateIp(ip) {
   });
 }
 
-// Hàm tính toán subnet và hiển thị kết quả
 function calculateSubnets() {
-  const ip = document.querySelector('input[name="ip"]').value;
-  const subnet = document.querySelector('input[name="subnet-mask"]').value;
+  const subnetInput = document.querySelector('input[name="subnet-mask"]').value;
+  const ipInput = document.querySelector('input[name="ip"]').value;
 
-  if (
-    !validateIp(ip) ||
-    isNaN(parseInt(subnet)) ||
-    parseInt(subnet) < 0 ||
-    parseInt(subnet) > 32
-  ) {
-    alert("Vui lòng nhập địa chỉ IP hoặc Subnet Mask hợp lệ");
+  if (!validateIp(ipInput) || isNaN(parseInt(subnetInput)) || parseInt(subnetInput) < 0 || parseInt(subnetInput) > 32) {
+    alert("Vui lòng nhập địa chỉ IP và Subnet Mask hợp lệ (0-32)");
     return;
   }
 
-  const binaryIp = ipToBinary(ip).replace(/\./g, "");
-  const subnetMaskBits = parseInt(subnet);
-  const numberOfSubnets = Math.pow(2, 32 - subnetMaskBits); // Tổng số subnets
+  const subnetMaskBits = parseInt(subnetInput);
+  const numberOfSubnets = Math.pow(2, 32 - subnetMaskBits);
+  const numberOfHosts = Math.pow(2, 32 - subnetMaskBits) - 2;
+  const binaryIp = ipToBinary(ipInput).replace(/\./g, "");
 
   const resultDiv = document.querySelector(".result");
-  resultDiv.innerHTML = ""; // Xóa kết quả cũ
+  resultDiv.innerHTML = ""; // Clear previous results
+
   for (let i = 0; i < numberOfSubnets; i++) {
     const subnetBinary = (parseInt(binaryIp.substr(0, subnetMaskBits), 2) + i)
       .toString(2)
       .padEnd(32, "0");
     const networkAddress = binaryToIp(subnetBinary);
 
-    const broadcastBinary = subnetBinary
-      .substr(0, subnetMaskBits)
-      .padEnd(32, "1");
+    const broadcastBinary = subnetBinary.substr(0, subnetMaskBits).padEnd(32, "1");
     const broadcastAddress = binaryToIp(broadcastBinary);
 
-    const numberOfHosts = Math.pow(2, 32 - subnetMaskBits) - 2; // Số host trừ địa chỉ mạng và broadcast
-
-    // Hiển thị kết quả từng subnet
     resultDiv.innerHTML += `
-        <div class="network-block">
-          Địa chỉ mạng ${
-            i + 1
-          }: ${networkAddress} có ${numberOfHosts} host, địa chỉ broadcast là ${broadcastAddress} <br/>
-        </div>
-      `;
+      <div class="network-block">
+        Địa chỉ mạng ${i + 1}: ${networkAddress} có ${numberOfHosts} host, địa chỉ broadcast là ${broadcastAddress} <br/>
+      </div>
+    `;
   }
 }
 
-// Hàm chuyển nhị phân sang IP thập phân
+function calculateTotalSubnets() {
+  const subnetInput = document.querySelector('input[name="subnet-mask"]').value;
+  const ipInput = document.querySelector('input[name="ip"]').value;
+
+  if (!validateIp(ipInput) || isNaN(parseInt(subnetInput)) || parseInt(subnetInput) < 0 || parseInt(subnetInput) > 32) {
+    alert("Vui lòng nhập địa chỉ IP và Subnet Mask hợp lệ (0-32)");
+    return;
+  }
+
+  const subnetMaskBits = parseInt(subnetInput);
+  const totalSubnets = Math.pow(2, 32 - subnetMaskBits);
+  const numberOfHosts = Math.pow(2, 32 - subnetMaskBits) - 2;
+
+  const binaryIp = ipToBinary(ipInput).replace(/\./g, "");
+  const networkBinary = binaryIp.substr(0, subnetMaskBits).padEnd(32, "0");
+  const networkAddress = binaryToIp(networkBinary);
+  const broadcastBinary = binaryIp.substr(0, subnetMaskBits).padEnd(32, "1");
+  const broadcastAddress = binaryToIp(broadcastBinary);
+
+  const resultDiv = document.querySelector(".result");
+  resultDiv.innerHTML = `
+    Tổng số đường mạng có thể: ${totalSubnets} <br/>
+    Số host khả dụng trên mỗi mạng: ${numberOfHosts} <br/>
+    Địa chỉ mạng mẫu (subnet đầu tiên): ${networkAddress} <br/>
+    Địa chỉ broadcast mẫu (subnet đầu tiên): ${broadcastAddress}
+  `;
+
+  let calculateBtn = document.getElementById("calculateBtn");
+  if (!calculateBtn) {
+    calculateBtn = document.createElement("button");
+    calculateBtn.id = "calculateBtn";
+    calculateBtn.innerText = "Tính toán";
+    calculateBtn.onclick = calculateSubnets;
+    calculateBtn.style.marginTop = "20px";
+  }
+  resultDiv.appendChild(calculateBtn);
+}
+
 function binaryToIp(binary) {
   return binary
     .match(/.{1,8}/g)
     .map((bin) => parseInt(bin, 2))
     .join(".");
 }
-let menuVisible = false;
+// Hàm hiển thị Subnet Calculator
+// Hàm hiển thị Subnet Calculator và ẩn các phần khác
+function showCalculator() {
+  document.getElementById("calculator").style.display = "block";
+  document.getElementById("resultContainer").style.display = "block";
+  document.getElementById("studentList").style.display = "none";
+  document.getElementById("studentDetails").style.display = "none";
+}
 
-function toggleMenu() {
-  const menu = document.getElementById("menu");
-  const menuIcon = document.getElementById("menu-icon");
-  const cal=document.querySelector(".cal");
-  if (menuVisible) {
-    // Đóng menu
-    menu.classList.remove("active"); // Xóa lớp 'active'
-    menuIcon.src = "./img/momenu.png"; // Thay đổi ảnh nút mở
-  } else {
-    // Mở menu
-    menu.classList.add("active"); // Thêm lớp 'active'
-    menuIcon.src = "./img/dongmenu.png"; // Thay đổi ảnh nút đóng
-  }
+// Hàm hiển thị Danh Sách Sinh Viên và ẩn các phần khác
+function showStudentList() {
+  document.getElementById("calculator").style.display = "none";
+  document.getElementById("resultContainer").style.display = "none";
+  document.getElementById("studentList").style.display = "block";
+  document.getElementById("studentDetails").style.display = "none";
+}
 
-  menuVisible = !menuVisible; // Đảo trạng thái hiển thị menu
-  if (cal.classList.contains("margin-left-300")) {
-    cal.classList.remove("margin-left-300");
-  } else {
-    cal.classList.add("margin-left-300");
-  }
+// Hàm hiển thị chi tiết sinh viên và ẩn Danh Sách Sinh Viên
+function showStudentDetails(studentId) {
+  const students = {
+    SV001: {
+      name: "Nguyễn Văn A",
+      id: "SV001",
+      class: "10A1",
+      gpa: "8.5",
+      photo: "images/student1.jpg"
+    },
+    SV002: {
+      name: "Trần Thị B",
+      id: "SV002",
+      class: "10A2",
+      gpa: "7.0",
+      photo: "images/student2.jpg"
+    },
+    SV003: {
+      name: "Lê Văn C",
+      id: "SV003",
+      class: "10A1",
+      gpa: "9.0",
+      photo: "images/student3.jpg"
+    }
+  };
+  
+  
+  
+  const student = students[studentId];
+  document.getElementById("detailName").innerText = student.name;
+  document.getElementById("detailId").innerText = student.id;
+  document.getElementById("detailClass").innerText = student.class;
+  document.getElementById("detailGPA").innerText = student.gpa;
+  document.getElementById("detailPhoto").src = student.photo; // Hiển thị ảnh sinh viên
+
+   // Hiển thị phần chi tiết và ẩn danh sách sinh viên
+  document.getElementById("studentList").style.display = "none";
+  document.getElementById("studentDetails").style.display = "block";
+}
+
+// Hàm quay lại Danh Sách Sinh Viên từ phần chi tiết sinh viên
+function hideStudentDetails() {
+  document.getElementById("studentDetails").style.display = "none";
+  document.getElementById("studentList").style.display = "block";
 }
