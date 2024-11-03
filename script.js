@@ -115,6 +115,9 @@ function calculateTotalSubnets() {
     Địa chỉ broadcast mẫu (subnet đầu tiên): ${broadcastAddress}
   `;
 
+  // Hiển thị kết quả
+  document.getElementById("resultContainer").style.display = "block";
+
   let calculateBtn = document.getElementById("calculateBtn");
   if (!calculateBtn) {
     calculateBtn = document.createElement("button");
@@ -125,6 +128,7 @@ function calculateTotalSubnets() {
   }
   resultDiv.appendChild(calculateBtn);
 }
+
 
 function binaryToIp(binary) {
   return binary
